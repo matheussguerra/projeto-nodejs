@@ -1,16 +1,14 @@
-import { getRepository } from 'typeorm'
-import { hash } from 'bcryptjs'
+import { getRepository } from 'typeorm';
+import { hash } from 'bcryptjs';
 
-import User from '../models/User'
+import AppError from '@shared/errors/AppError';
 
-import AppError from '../errors/AppError'
-
-
+import User from '@modules/users/infra/typeorm/entities/User';
 
 interface Request {
   name: string;
   email: string;
-  password: string
+  password: string;
 }
 
 class CreateUserService {
@@ -19,10 +17,10 @@ class CreateUserService {
 
     const checkUserExists = await usersRepository.findOne({
       where: { email },
-    })
+    });
 
     if (checkUserExists) {
-      throw new AppError('Email address already used.')
+      throw new AppError('Email address already used.');
     }
 
     const hashedPassword = await hash(password, 8);
@@ -34,8 +32,7 @@ class CreateUserService {
     });
 
     await usersRepository.save(user);
-    return user
+    return user;
   }
-
 }
-export default CreateUserService
+export default CreateUserService;
